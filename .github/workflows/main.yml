@@ -149,13 +149,7 @@ jobs:
           # ============================================================================
           
           repos=(
-            "soul-traveller/Argyll_Printer_Profiler"
-            "soul-traveller/Argyll_Printer_Profiler_GUI"
-            "soul-traveller/Toggle_Display_Profile"
-            "soul-traveller/rectarg"
-            "soul-traveller/github-traffic-dashboard"
-            "soul-traveller/average_ti3s_rgbgeom"
-            "soul-traveller/read_image_patch_colors"
+            "itsab1989/ChromIQ"
           )
           
           # ============================================================================
