@@ -5,7 +5,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones and views) for GitHub repositories.
 
-**Last Updated:** 2026-05-22T06:01:13.113428Z
+**Last Updated:** 2026-05-23T05:35:25.018844Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -88,9 +88,9 @@ Quick navigation to repository statistics:
 
 | Period | Total | Unique |
 |--------|-------|--------|
-| Last 30 Days | 5273 | 1093 |
-| Last 90 Days | 5273 | 1093 |
-| Lifetime | 5273 | 1093 |
+| Last 30 Days | 5633 | 1195 |
+| Last 90 Days | 5633 | 1195 |
+| Lifetime | 5633 | 1195 |
 
 ### 📄 Repeat vs New Clones
 
@@ -100,9 +100,9 @@ Quick navigation to repository statistics:
 
 | Period | Total Clones | Unique Clones | Repeat Clones | Repeat % |
 |--------|--------------|----------------|----------------|----------|
-| Last 30 Days | 5273 | 1093 | 4180 | 79.3% |
-| Last 90 Days | 5273 | 1093 | 4180 | 79.3% |
-| Lifetime | 5273 | 1093 | 4180 | 79.3% |
+| Last 30 Days | 5633 | 1195 | 4438 | 78.8% |
+| Last 90 Days | 5633 | 1195 | 4438 | 78.8% |
+| Lifetime | 5633 | 1195 | 4438 | 78.8% |
 
 ### 👀 Views
 
@@ -110,9 +110,9 @@ Quick navigation to repository statistics:
 
 | Period | Total | Unique |
 |--------|-------|--------|
-| Last 30 Days | 617 | 206 |
-| Last 90 Days | 617 | 206 |
-| Lifetime | 617 | 206 |
+| Last 30 Days | 696 | 219 |
+| Last 90 Days | 696 | 219 |
+| Lifetime | 696 | 219 |
 
 ### 📞 Referrers
 
@@ -122,15 +122,15 @@ Quick navigation to repository statistics:
 
 | Referrer | Total Views | Unique Visitors |
 |----------|-------------|----------------|
-| github.com | 43 | 11 |
+| github.com | 51 | 11 |
 | dpreview.com | 27 | 10 |
-| forum.luminous-landscape.com | 24 | 6 |
-| Google | 19 | 10 |
-| reddit.com | 9 | 8 |
-| printerknowledge.com | 8 | 6 |
-| Bing | 4 | 3 |
+| forum.luminous-landscape.com | 25 | 7 |
+| Google | 15 | 8 |
+| printerknowledge.com | 12 | 8 |
+| hub.displaycal.net | 11 | 2 |
+| reddit.com | 10 | 9 |
 | freelists.org | 4 | 1 |
-| hub.displaycal.net | 2 | 1 |
+| Bing | 3 | 2 |
 | www-printerknowledge-com.translate.goog | 2 | 1 |
 
 ### 👥 Repeat vs New Visitors
@@ -141,9 +141,9 @@ Quick navigation to repository statistics:
 
 | Period | Total Views | Unique Visitors | Repeat Visitors | Repeat % |
 |--------|-------------|-----------------|-----------------|----------|
-| Last 30 Days | 617 | 206 | 411 | 66.6% |
-| Last 90 Days | 617 | 206 | 411 | 66.6% |
-| Lifetime | 617 | 206 | 411 | 66.6% |
+| Last 30 Days | 696 | 219 | 477 | 68.5% |
+| Last 90 Days | 696 | 219 | 477 | 68.5% |
+| Lifetime | 696 | 219 | 477 | 68.5% |
 
 ### 📈 Traffic Graphs
 
