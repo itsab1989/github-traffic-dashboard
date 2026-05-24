@@ -131,9 +131,10 @@ jobs:
           fi
 
       # Step 4: Fetch traffic data from GitHub API with comprehensive error handling
-      # This step fetches clones, views, and referrers data for all configured repositories
-      # The GitHub API returns data for the last 14 days, which allows recovery of missed runs
-      # Error codes: TF001-003 (Traffic Fetch), JV001-003 (JSON Validation)
+      # This step fetches clones, views, referrers, and release downloads for all configured repositories
+      # The GitHub API returns traffic data for the last 14 days, which allows recovery of missed runs.
+      # Release download_count is cumulative (all-time), so it is snapshotted and diffed later.
+      # Error codes: TF001-004 (Traffic Fetch), JV001-004 (JSON Validation)
       - name: Fetch traffic data with error handling
         id: fetch_traffic
         run: |
@@ -274,7 +275,63 @@ jobs:
               echo "$referrers_json"
               exit 1
             }
-            
+
+            # Fetch release asset download counts from GitHub Releases API
+            # Unlike traffic (clones/views), download_count is a CUMULATIVE, all-time
+            # counter per asset - not a rolling 14-day window. We snapshot the per-platform
+            # cumulative totals here; merge_history.py derives per-day downloads by diffing
+            # consecutive snapshots. The Releases endpoint is paginated (100 per page).
+            echo "Fetching release download counts for: $repo"
+            releases_all="[]"
+            page=1
+            while true; do
+              releases_response=$(curl -s -w "\n%{http_code}" \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{ secrets.TRAFFIC_ACTION_TOKEN }}" \
+                -H "X-GitHub-Api-Version: ${{ env.GITHUB_API_VERSION }}" \
+                "${{ env.GITHUB_API_BASE_URL }}/repos/$repo/releases?per_page=100&page=$page" 2>&1)
+
+              # Extract HTTP status code and JSON body
+              releases_http_code=$(echo "$releases_response" | tail -n1)
+              releases_json=$(echo "$releases_response" | sed '$d')
+
+              # Validate HTTP response code for releases
+              # ERROR_CODE: TF004 - Traffic Fetch error for releases
+              if [ "$releases_http_code" != "200" ]; then
+                echo "ERROR_CODE: TF004 - Failed to fetch releases for $repo (HTTP $releases_http_code)"
+                echo "Response: $releases_json"
+                exit 1
+              fi
+
+              # Validate that the releases response is a JSON array
+              # ERROR_CODE: JV004 - JSON Validation error for releases
+              echo "$releases_json" | jq -e 'type == "array"' >/dev/null 2>&1 || {
+                echo "ERROR_CODE: JV004 - Invalid releases JSON structure for $repo"
+                echo "$releases_json"
+                exit 1
+              }
+
+              # Accumulate this page into the full releases array
+              page_count=$(echo "$releases_json" | jq 'length')
+              releases_all=$(jq -s 'add' <(echo "$releases_all") <(echo "$releases_json"))
+
+              # Stop when the last page (fewer than 100 items) is reached
+              if [ "$page_count" -lt 100 ]; then
+                break
+              fi
+              page=$((page + 1))
+            done
+
+            # Aggregate download counts by platform from asset file names.
+            # Matching is case-insensitive on platform keyword or file extension.
+            # "total" sums every asset, so unmatched assets are still counted in the total.
+            downloads_total=$(echo "$releases_all" | jq '[.[].assets[]?.download_count] | add // 0')
+            downloads_windows=$(echo "$releases_all" | jq '[.[].assets[]? | select(.name | test("(?i)windows|win-|\\.exe$|\\.msi$")) | .download_count] | add // 0')
+            downloads_macos=$(echo "$releases_all" | jq '[.[].assets[]? | select(.name | test("(?i)macos|darwin|osx|\\.dmg$|\\.pkg$")) | .download_count] | add // 0')
+            downloads_linux=$(echo "$releases_all" | jq '[.[].assets[]? | select(.name | test("(?i)linux|\\.appimage$|\\.deb$|\\.rpm$")) | .download_count] | add // 0')
+
+            echo "Release downloads for $repo: total=$downloads_total windows=$downloads_windows macos=$downloads_macos linux=$downloads_linux"
+
             # Extract daily data arrays with safe defaults (empty array if missing)
             clones_daily=$(echo "$clones_json" | jq -c '.clones // []')
             views_daily=$(echo "$views_json" | jq -c '.views // []')
@@ -297,6 +354,11 @@ jobs:
                --argjson clones_unique_total "$clones_unique_total" \
                --argjson views_total "$views_total" \
                --argjson views_unique_total "$views_unique_total" \
+               --argjson downloads_total "$downloads_total" \
+               --argjson downloads_windows "$downloads_windows" \
+               --argjson downloads_macos "$downloads_macos" \
+               --argjson downloads_linux "$downloads_linux" \
+               --arg today "$(date -u +%Y-%m-%d)" \
                --arg fetch_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
                '.repositories[$repo] = {
                  "daily_data": ($clones + $views | map(.timestamp |= .[:10]) | group_by(.timestamp) | map({
@@ -313,6 +375,14 @@ jobs:
                    "clones_unique_total": $clones_unique_total,
                    "views_total": $views_total,
                    "views_unique_total": $views_unique_total
+                 },
+                 "downloads": {
+                   "date": $today,
+                   "last_fetched": $fetch_date,
+                   "cumulative_total": $downloads_total,
+                   "cumulative_windows": $downloads_windows,
+                   "cumulative_macos": $downloads_macos,
+                   "cumulative_linux": $downloads_linux
                  }
                } |
                .metadata.repositories += [$repo]' \

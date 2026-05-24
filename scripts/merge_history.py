@@ -261,6 +261,125 @@ def calculate_totals(daily_data: List[Dict[str, Any]]) -> Dict[str, int]:
     return totals
 
 
+# Platforms tracked for release downloads.
+# "total" is the grand total across all assets (matched or not); the others are
+# the per-platform sums. Keys map to fields named cumulative_<platform> and
+# downloads_<platform> in the downloads daily_data entries.
+DOWNLOAD_PLATFORMS = ['total', 'windows', 'macos', 'linux']
+
+
+def _cumulative_snapshot(entry: Dict[str, Any]) -> Dict[str, int]:
+    """Extract the per-platform cumulative counts from a downloads entry."""
+    return {
+        f'cumulative_{p}': int(entry.get(f'cumulative_{p}', 0) or 0)
+        for p in DOWNLOAD_PLATFORMS
+    }
+
+
+def merge_downloads(existing_downloads: Dict[str, Any], new_downloads: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Merge release-download snapshots and (re)compute per-day download deltas.
+
+    ## Why this differs from clones/views
+
+    The GitHub Releases API reports download_count as a CUMULATIVE, all-time
+    counter per asset - it is not a rolling 14-day window. Each workflow run
+    therefore records a snapshot of the per-platform cumulative totals, and this
+    function derives per-day downloads as the difference between consecutive
+    snapshots.
+
+    ## Behavior
+
+    - The new snapshot (today's cumulative totals) takes precedence for its date.
+    - A continuous, date-sorted series is built from the first snapshot to the
+      latest. Days with no snapshot carry the previous cumulative value forward
+      and record a daily delta of 0 (no observed change).
+    - Daily delta = max(0, cumulative_today - cumulative_previous). Negative
+      deltas (e.g. a release or asset was deleted) are clamped to 0.
+    - The first entry has a daily delta of 0 because there is no prior baseline.
+
+    ## Data availability
+
+    Lifetime totals are accurate immediately (the cumulative counter already
+    reflects all-time downloads). Per-day figures only exist from the first
+    snapshot onward - GitHub does not expose historical per-day download data.
+
+    Args:
+        existing_downloads: Existing downloads section ({daily_data, metadata}) or {}
+        new_downloads: Newly fetched snapshot ({date, cumulative_*, last_fetched}) or {}
+
+    Returns:
+        Dictionary with 'daily_data' (per-day deltas + cumulative snapshots) and
+        'metadata' (latest cumulative totals).
+    """
+    existing_downloads = existing_downloads or {}
+    new_downloads = new_downloads or {}
+
+    # Index existing cumulative snapshots by date
+    by_date: Dict[str, Dict[str, int]] = {}
+    for entry in existing_downloads.get('daily_data', []):
+        date_str = entry.get('date')
+        if date_str:
+            by_date[date_str] = _cumulative_snapshot(entry)
+
+    # Overlay the new snapshot (new data takes precedence for its date)
+    new_date = new_downloads.get('date')
+    if new_date:
+        by_date[new_date] = _cumulative_snapshot(new_downloads)
+
+    # Nothing to merge yet (e.g. first ever run before any snapshot exists)
+    if not by_date:
+        return {'daily_data': [], 'metadata': {}}
+
+    # Build a continuous daily series from the first to the last snapshot,
+    # carrying cumulative values forward across missing days.
+    sorted_dates = sorted(by_date.keys())
+    start = datetime.strptime(sorted_dates[0], '%Y-%m-%d').date()
+    end = datetime.strptime(sorted_dates[-1], '%Y-%m-%d').date()
+
+    daily_data: List[Dict[str, Any]] = []
+    prev_cumulative = None
+    last_known = by_date[sorted_dates[0]]
+    current_date = start
+
+    while current_date <= end:
+        date_str = current_date.strftime('%Y-%m-%d')
+
+        # Use a fresh snapshot if one exists for this date, else carry forward
+        if date_str in by_date:
+            last_known = by_date[date_str]
+
+        entry: Dict[str, Any] = {'date': date_str}
+        for p in DOWNLOAD_PLATFORMS:
+            cumulative_key = f'cumulative_{p}'
+            cumulative_value = last_known[cumulative_key]
+            entry[cumulative_key] = cumulative_value
+
+            if prev_cumulative is None:
+                # No prior baseline for the very first day
+                entry[f'downloads_{p}'] = 0
+            else:
+                # Clamp negative deltas (deleted releases/assets) to 0
+                entry[f'downloads_{p}'] = max(0, cumulative_value - prev_cumulative[cumulative_key])
+
+        daily_data.append(entry)
+        prev_cumulative = {f'cumulative_{p}': entry[f'cumulative_{p}'] for p in DOWNLOAD_PLATFORMS}
+        current_date += timedelta(days=1)
+
+    # Metadata reflects the latest cumulative totals (true lifetime figures)
+    latest = daily_data[-1]
+    metadata = {
+        'last_fetched': new_downloads.get(
+            'last_fetched',
+            existing_downloads.get('metadata', {}).get('last_fetched', '')
+        ),
+    }
+    for p in DOWNLOAD_PLATFORMS:
+        metadata[f'cumulative_{p}'] = latest[f'cumulative_{p}']
+
+    return {'daily_data': daily_data, 'metadata': metadata}
+
+
 def merge_repositories(existing_repos: Dict[str, Any], new_repos: Dict[str, Any]) -> Dict[str, Any]:
     """
     Merge repository data from existing and new data sources.
@@ -308,14 +427,23 @@ def merge_repositories(existing_repos: Dict[str, Any], new_repos: Dict[str, Any]
         
         # Use referrers from new data if available, otherwise from existing
         referrers = new_repo.get('referrers', existing_repo.get('referrers', []))
-        
+
+        # Merge release-download snapshots and recompute per-day deltas.
+        # download_count is cumulative, so this diffs consecutive snapshots
+        # rather than summing daily values like clones/views.
+        merged_downloads = merge_downloads(
+            existing_repo.get('downloads', {}),
+            new_repo.get('downloads', {})
+        )
+
         # Store the merged repository data
         merged_repos[repo_name] = {
             'daily_data': zero_filled_daily,
             'referrers': referrers,
-            'metadata': metadata
+            'metadata': metadata,
+            'downloads': merged_downloads
         }
-    
+
     return merged_repos
 
 
@@ -400,9 +528,11 @@ def main():
     for repo_name, repo_data in merged_repos.items():
         daily_count = len(repo_data.get('daily_data', []))
         metadata = repo_data.get('metadata', {})
+        downloads_meta = repo_data.get('downloads', {}).get('metadata', {})
         print(f"  {repo_name}: {daily_count} days, "
               f"{metadata.get('clones_total', 0)} clones, "
-              f"{metadata.get('views_total', 0)} views")
+              f"{metadata.get('views_total', 0)} views, "
+              f"{downloads_meta.get('cumulative_total', 0)} downloads")
 
 
 # Entry point: Run main() if this script is executed directly

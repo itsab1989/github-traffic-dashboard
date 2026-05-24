@@ -47,6 +47,19 @@ VIEWS_COLOR = "#4CAF50"                     # Green for views
 GRID_COLOR = "#E0E0E0"                      # Light gray for grid lines
 TEXT_COLOR = "#333333"                      # Dark gray for text
 
+# Release Downloads Configuration
+# Whether to include the release-downloads section (tables + graphs)
+INCLUDE_DOWNLOADS = True
+# Series plotted on the download graphs: (label, data_key, color, marker, linewidth)
+# data_key maps to downloads_<key> (daily) and cumulative_<key> (lifetime) fields.
+# "All" is drawn thicker so the combined line stands out from the per-platform lines.
+DOWNLOAD_SERIES = [
+    ("All",     "total",   "#212121", "o", 2.5),   # Near-black for the combined total
+    ("Windows", "windows", "#0078D6", "s", 2.0),   # Windows blue
+    ("macOS",   "macos",   "#8E8E93", "^", 2.0),   # Apple silver/gray
+    ("Linux",   "linux",   "#E95420", "D", 2.0),   # Ubuntu orange
+]
+
 # Repository Display Configuration
 # How repository names are displayed in graphs and README
 # Set to True to show full "owner/repo" name, False to show only repo name
@@ -433,7 +446,111 @@ def get_cumulative_data(daily_data: List[Dict[str, Any]]) -> Tuple[List[str], Li
     return dates, cumulative_clones, cumulative_views
 
 
-def create_graph(dates: List[str], values: List[int], title: str, ylabel: str, 
+def get_downloads_daily(downloads_daily: List[Dict[str, Any]], days: int) -> Tuple[List[str], Dict[str, List[int]]]:
+    """
+    Extract per-day release-download deltas for the last N days, per platform.
+
+    Args:
+        downloads_daily: List of downloads daily entries (with downloads_<platform> deltas)
+        days: Number of days to include
+
+    Returns:
+        Tuple of (list of date strings, dict mapping platform key -> list of daily counts).
+        Platform keys: total, windows, macos, linux.
+    """
+    series = {'total': [], 'windows': [], 'macos': [], 'linux': []}
+    if not downloads_daily:
+        return [], series
+
+    # Calculate the cutoff date (N days ago)
+    cutoff_date = (datetime.utcnow() - timedelta(days=days)).strftime('%Y-%m-%d')
+
+    dates = []
+    for entry in downloads_daily:
+        if entry.get('date', '') >= cutoff_date:
+            dates.append(entry.get('date', ''))
+            for platform in series:
+                series[platform].append(entry.get(f'downloads_{platform}', 0))
+
+    return dates, series
+
+
+def get_downloads_cumulative(downloads_daily: List[Dict[str, Any]]) -> Tuple[List[str], Dict[str, List[int]]]:
+    """
+    Extract cumulative (all-time running total) release downloads, per platform.
+
+    The cumulative values are already stored in each entry (as snapshots), so no
+    running sum is computed here - they are read directly.
+
+    Args:
+        downloads_daily: List of downloads daily entries (with cumulative_<platform> snapshots)
+
+    Returns:
+        Tuple of (list of date strings, dict mapping platform key -> list of cumulative totals).
+    """
+    series = {'total': [], 'windows': [], 'macos': [], 'linux': []}
+    if not downloads_daily:
+        return [], series
+
+    dates = []
+    for entry in downloads_daily:
+        dates.append(entry.get('date', ''))
+        for platform in series:
+            series[platform].append(entry.get(f'cumulative_{platform}', 0))
+
+    return dates, series
+
+
+def calculate_downloads_period_stats(downloads_daily: List[Dict[str, Any]], days: int) -> Dict[str, int]:
+    """
+    Sum per-day release downloads over the last N days, per platform.
+
+    Args:
+        downloads_daily: List of downloads daily entries
+        days: Number of days to look back from today
+
+    Returns:
+        Dictionary mapping platform key -> total downloads in the period.
+    """
+    stats = {'total': 0, 'windows': 0, 'macos': 0, 'linux': 0}
+    if not downloads_daily:
+        return stats
+
+    cutoff_date = (datetime.utcnow() - timedelta(days=days)).strftime('%Y-%m-%d')
+    for entry in downloads_daily:
+        if entry.get('date', '') >= cutoff_date:
+            for platform in stats:
+                stats[platform] += entry.get(f'downloads_{platform}', 0)
+
+    return stats
+
+
+def calculate_downloads_lifetime(downloads_daily: List[Dict[str, Any]]) -> Dict[str, int]:
+    """
+    Get lifetime (all-time) release downloads, per platform.
+
+    Lifetime is read from the most recent cumulative snapshot rather than summed
+    from daily deltas, so it reflects the true all-time download_count even for
+    downloads that happened before per-day tracking began.
+
+    Args:
+        downloads_daily: List of downloads daily entries
+
+    Returns:
+        Dictionary mapping platform key -> all-time download total.
+    """
+    stats = {'total': 0, 'windows': 0, 'macos': 0, 'linux': 0}
+    if not downloads_daily:
+        return stats
+
+    latest = downloads_daily[-1]
+    for platform in stats:
+        stats[platform] = latest.get(f'cumulative_{platform}', 0)
+
+    return stats
+
+
+def create_graph(dates: List[str], values: List[int], title: str, ylabel: str,
                  filename: str, color: str = 'blue', figsize: Tuple[int, int] = None) -> None:
     """
     Create a single-line graph with the given data.
@@ -575,6 +692,129 @@ def create_multi_line_graph(dates: List[str], clones: List[int], views: List[int
         # ERROR_CODE: GD007 - Multi-line graph creation error
         print(f"ERROR_CODE: GD007 - Error creating graph {filename}: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+def create_downloads_graph(dates: List[str], series_by_key: Dict[str, List[int]],
+                           title: str, ylabel: str, filename: str,
+                           figsize: Tuple[int, int] = None) -> None:
+    """
+    Create a multi-line graph of release downloads split by platform.
+
+    Plots one line per entry in DOWNLOAD_SERIES (All, Windows, macOS, Linux),
+    each with its own color and marker, plus a legend.
+
+    Args:
+        dates: List of date strings in 'YYYY-MM-DD' format
+        series_by_key: Dict mapping platform key (total/windows/macos/linux) to value lists
+        title: Title for the graph
+        ylabel: Label for the y-axis
+        filename: Path where the graph image will be saved
+        figsize: Figure size as (width, height) tuple (uses GRAPH_FIGSIZE_CUMULATIVE if None)
+
+    Raises:
+        SystemExit: If graph creation fails (GD009)
+    """
+    try:
+        # Check if we have data to plot
+        if not dates:
+            print(f"WARNING: No data for graph: {title}")
+            return
+
+        # Use configured figure size if not provided
+        if figsize is None:
+            figsize = GRAPH_FIGSIZE_CUMULATIVE
+
+        # Convert date strings to datetime objects for plotting
+        dates_dt = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
+
+        # Create a new figure with specified size from configuration
+        plt.figure(figsize=figsize)
+
+        # Plot one line per platform using the configured series styling
+        for label, key, color, marker, linewidth in DOWNLOAD_SERIES:
+            values = series_by_key.get(key, [])
+            if not values:
+                continue
+            plt.plot(dates_dt, values, marker=marker, linewidth=linewidth,
+                     markersize=4, color=color, label=label)
+
+        # Set title and axis labels with configured text color
+        plt.title(title, fontsize=14, fontweight='bold', color=TEXT_COLOR)
+        plt.xlabel('Date', fontsize=12, color=TEXT_COLOR)
+        plt.ylabel(ylabel, fontsize=12, color=TEXT_COLOR)
+
+        # Add legend in upper left corner
+        plt.legend(loc='upper left', fontsize=10)
+
+        # Add grid with configured color and transparency
+        plt.grid(True, color=GRID_COLOR, alpha=0.3)
+
+        # Format x-axis to show dates properly
+        ax = plt.gca()
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+        plt.xticks(rotation=45, ha='right')
+
+        # Adjust layout to prevent label cutoff
+        plt.tight_layout()
+
+        # Save the figure with configured DPI
+        plt.savefig(filename, dpi=GRAPH_DPI, bbox_inches='tight')
+
+        # Close the figure to free memory
+        plt.close()
+
+    except Exception as e:
+        # ERROR_CODE: GD009 - Downloads graph creation error
+        print(f"ERROR_CODE: GD009 - Error creating downloads graph {filename}: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def generate_repository_downloads_graphs(repo_name: str, downloads_daily: List[Dict[str, Any]]) -> Dict[str, str]:
+    """
+    Generate release-download graphs for a single repository.
+
+    Creates two graphs (each split by platform: All, Windows, macOS, Linux):
+    1. Daily downloads (DAILY_GRAPH_DAYS) - per-day downloads derived from snapshots
+    2. Cumulative downloads (lifetime) - all-time running totals
+
+    Args:
+        repo_name: Full repository name (e.g., 'owner/repo')
+        downloads_daily: List of downloads daily entries for the repository
+
+    Returns:
+        Dictionary mapping graph type to file path:
+        - 'downloads_daily': Path to daily downloads graph
+        - 'downloads_cumulative': Path to cumulative downloads graph
+    """
+    safe_repo_name = repo_name.replace('/', '_')
+    graphs = {}
+
+    # 1. Daily downloads graph (uses DAILY_GRAPH_DAYS configuration)
+    daily_dates, daily_series = get_downloads_daily(downloads_daily, DAILY_GRAPH_DAYS)
+    if daily_dates:
+        create_downloads_graph(
+            daily_dates, daily_series,
+            f'Daily Release Downloads ({DAILY_GRAPH_DAYS} Days) - {repo_name}',
+            'Downloads',
+            f'{GRAPHS_DIRECTORY}/{safe_repo_name}_downloads_daily_{DAILY_GRAPH_DAYS}d.png',
+            figsize=GRAPH_FIGSIZE_DAILY
+        )
+        graphs['downloads_daily'] = f'{GRAPHS_DIRECTORY}/{safe_repo_name}_downloads_daily_{DAILY_GRAPH_DAYS}d.png'
+
+    # 2. Cumulative downloads graph (lifetime)
+    cumulative_dates, cumulative_series = get_downloads_cumulative(downloads_daily)
+    if cumulative_dates:
+        create_downloads_graph(
+            cumulative_dates, cumulative_series,
+            f'Cumulative Release Downloads (Lifetime) - {repo_name}',
+            'Total Downloads',
+            f'{GRAPHS_DIRECTORY}/{safe_repo_name}_downloads_cumulative.png',
+            figsize=GRAPH_FIGSIZE_CUMULATIVE
+        )
+        graphs['downloads_cumulative'] = f'{GRAPHS_DIRECTORY}/{safe_repo_name}_downloads_cumulative.png'
+
+    return graphs
 
 
 def generate_repository_graphs(repo_name: str, daily_data: List[Dict[str, Any]]) -> Dict[str, str]:
@@ -868,7 +1108,7 @@ def generate_readme(history_data: Dict[str, Any]) -> None:
 
     # Start with dashboard title and description
     md += "# \U0001f4ca GitHub Traffic Dashboard\n\n"
-    md += "This dashboard tracks historical traffic data (clones and views) for GitHub repositories.\n\n"
+    md += "This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.\n\n"
     
     # Add last updated timestamp if available
     if 'metadata' in history_data:
@@ -888,6 +1128,12 @@ def generate_readme(history_data: Dict[str, Any]) -> None:
     md += "- Counted when someone clones the repository\n"
     md += "- Includes clones via `git clone`, GitHub Desktop, download ZIP, and API\n"
     md += "- Can occur without a corresponding view event\n\n"
+    md += "**Release Downloads:**\n"
+    md += "- Counted when someone downloads a pre-compiled release asset (binary/installer)\n"
+    md += "- Split by platform from the asset file name (Windows, macOS, Linux); **All** is the combined total\n"
+    md += "- This is a **separate metric** from Clones - cloning the source is not a release download\n"
+    md += "- **Lifetime** totals reflect all-time downloads (GitHub's cumulative `download_count`) and are accurate immediately\n"
+    md += "- **Per-day** figures are derived by diffing daily snapshots, so they only accrue from the first tracked day onward\n\n"
     md += "**Important:** Views and Clones are **independent metrics**. Users can:\n"
     md += "- View without cloning\n"
     md += "- Clone without viewing (e.g., via `git clone` command)\n"
@@ -960,6 +1206,8 @@ def generate_readme(history_data: Dict[str, Any]) -> None:
         daily_data = repo_data.get('daily_data', [])
         metadata = repo_data.get('metadata', {})
         referrers = repo_data.get('referrers', [])
+        # Release-download series (per-day deltas + cumulative snapshots), if tracked
+        downloads_daily = repo_data.get('downloads', {}).get('daily_data', [])
         
         # Determine display name based on SHOW_FULL_REPO_NAME configuration
         if SHOW_FULL_REPO_NAME:
@@ -1056,7 +1304,41 @@ def generate_readme(history_data: Dict[str, Any]) -> None:
         md += f"| Last {STATS_PERIOD_SHORT_TERM} Days | {repeat_stats['short_term']['total_views']} | {repeat_stats['short_term']['unique_visitors']} | {repeat_stats['short_term']['repeat_visitors']} | {repeat_stats['short_term']['repeat_percentage']}% |\n"
         md += f"| Last {STATS_PERIOD_MEDIUM_TERM} Days | {repeat_stats['medium_term']['total_views']} | {repeat_stats['medium_term']['unique_visitors']} | {repeat_stats['medium_term']['repeat_visitors']} | {repeat_stats['medium_term']['repeat_percentage']}% |\n"
         md += f"| Lifetime | {repeat_stats['lifetime']['total_views']} | {repeat_stats['lifetime']['unique_visitors']} | {repeat_stats['lifetime']['repeat_visitors']} | {repeat_stats['lifetime']['repeat_percentage']}% |\n\n"
-        
+
+        # Add Release Downloads section (table + per-platform graphs), if tracked
+        if INCLUDE_DOWNLOADS and downloads_daily:
+            # Calculate per-platform download statistics for each period
+            dl_short = calculate_downloads_period_stats(downloads_daily, STATS_PERIOD_SHORT_TERM)
+            dl_medium = calculate_downloads_period_stats(downloads_daily, STATS_PERIOD_MEDIUM_TERM)
+            dl_lifetime = calculate_downloads_lifetime(downloads_daily)
+
+            md += "### \U0001f4e5 Release Downloads\n\n"
+            md += "*Pre-compiled release-asset downloads, split by platform. This is separate from clones.*\n\n"
+            md += "*Lifetime totals reflect all-time downloads (GitHub's cumulative counter). "
+            md += "Per-day figures (Last 30/90 Days) are derived from daily snapshots and only accrue from the first tracked day onward.*\n\n"
+
+            # Table: rows per platform, columns per period
+            md += f"| Platform | Last {STATS_PERIOD_SHORT_TERM} Days | Last {STATS_PERIOD_MEDIUM_TERM} Days | Lifetime |\n"
+            md += "|----------|-----------|-----------|----------|\n"
+            md += f"| \U0001fa9f Windows | {dl_short['windows']} | {dl_medium['windows']} | {dl_lifetime['windows']} |\n"
+            md += f"| \U0001f34e macOS | {dl_short['macos']} | {dl_medium['macos']} | {dl_lifetime['macos']} |\n"
+            md += f"| \U0001f427 Linux | {dl_short['linux']} | {dl_medium['linux']} | {dl_lifetime['linux']} |\n"
+            md += f"| **All** | **{dl_short['total']}** | **{dl_medium['total']}** | **{dl_lifetime['total']}** |\n\n"
+
+            # Generate and embed download graphs
+            print(f"Generating download graphs for {repo_name}...")
+            dl_graphs = generate_repository_downloads_graphs(repo_name, downloads_daily)
+
+            if 'downloads_daily' in dl_graphs:
+                md += f"#### Daily Release Downloads ({DAILY_GRAPH_DAYS} Days)\n\n"
+                md += f"*Per-day downloads for the last {DAILY_GRAPH_DAYS} days, by platform. Useful for spotting download spikes after new releases.*\n\n"
+                md += f"![Daily Downloads {DAILY_GRAPH_DAYS} Days]({dl_graphs['downloads_daily']})\n\n"
+
+            if 'downloads_cumulative' in dl_graphs:
+                md += "#### Cumulative Release Downloads (Lifetime)\n\n"
+                md += "*All-time running download totals by platform. Useful for seeing overall adoption per platform.*\n\n"
+                md += f"![Cumulative Downloads]({dl_graphs['downloads_cumulative']})\n\n"
+
         # Generate all graphs for this repository
         print(f"Generating graphs for {repo_name}...")
         graphs = generate_repository_graphs(repo_name, daily_data)
