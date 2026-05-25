@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-05-24T18:12:22Z",
-    "last_updated": "2026-05-24T18:12:27.660360Z",
+    "generated_at": "2026-05-25T06:21:09Z",
+    "last_updated": "2026-05-25T06:21:13.018580Z",
     "repositories": [
       "itsab1989/ChromIQ"
     ]
@@ -9,13 +9,6 @@
   "repositories": {
     "itsab1989/ChromIQ": {
       "daily_data": [
-        {
-          "date": "2025-05-24",
-          "clones_total": 0,
-          "clones_unique": 0,
-          "views_total": 0,
-          "views_unique": 0
-        },
         {
           "date": "2025-05-25",
           "clones_total": 0,
@@ -2570,6 +2563,13 @@
           "clones_unique": 0,
           "views_total": 0,
           "views_unique": 0
+        },
+        {
+          "date": "2026-05-25",
+          "clones_total": 0,
+          "clones_unique": 0,
+          "views_total": 0,
+          "views_unique": 0
         }
       ],
       "referrers": [
@@ -2625,7 +2625,7 @@
         }
       ],
       "metadata": {
-        "last_fetched": "2026-05-24T18:12:27Z",
+        "last_fetched": "2026-05-25T06:21:12Z",
         "clones_total": 5718,
         "clones_unique_total": 1221,
         "views_total": 708,
@@ -2643,19 +2643,40 @@
             "downloads_macos": 0,
             "cumulative_linux": 31,
             "downloads_linux": 0
+          },
+          {
+            "date": "2026-05-25",
+            "cumulative_total": 634,
+            "downloads_total": 34,
+            "cumulative_windows": 90,
+            "downloads_windows": 0,
+            "cumulative_macos": 513,
+            "downloads_macos": 34,
+            "cumulative_linux": 31,
+            "downloads_linux": 0
           }
         ],
         "metadata": {
-          "last_fetched": "2026-05-24T18:12:27Z",
-          "cumulative_total": 600,
+          "last_fetched": "2026-05-25T06:21:12Z",
+          "cumulative_total": 634,
           "cumulative_windows": 90,
-          "cumulative_macos": 479,
+          "cumulative_macos": 513,
           "cumulative_linux": 31
         },
         "by_release": [
           {
+            "tag": "v3.8.0-beta.2",
+            "downloads": 1,
+            "published_at": "2026-05-24T23:35:18Z"
+          },
+          {
+            "tag": "v3.8.0-beta.1",
+            "downloads": 1,
+            "published_at": "2026-05-24T19:55:16Z"
+          },
+          {
             "tag": "v3.7.38",
-            "downloads": 0,
+            "downloads": 1,
             "published_at": "2026-05-24T18:11:22Z"
           },
           {
@@ -2795,42 +2816,42 @@
           },
           {
             "tag": "v3.7.10",
-            "downloads": 4,
+            "downloads": 7,
             "published_at": "2026-05-20T19:31:42Z"
           },
           {
             "tag": "v3.7.9",
-            "downloads": 2,
+            "downloads": 10,
             "published_at": "2026-05-20T17:26:54Z"
           },
           {
             "tag": "v3.7.8",
-            "downloads": 4,
+            "downloads": 9,
             "published_at": "2026-05-20T11:05:26Z"
           },
           {
             "tag": "v3.7.7",
-            "downloads": 1,
+            "downloads": 4,
             "published_at": "2026-05-20T09:09:09Z"
           },
           {
             "tag": "v3.7.6",
-            "downloads": 4,
+            "downloads": 6,
             "published_at": "2026-05-20T06:40:39Z"
           },
           {
             "tag": "v3.7.5",
-            "downloads": 9,
+            "downloads": 13,
             "published_at": "2026-05-19T17:22:01Z"
           },
           {
             "tag": "v3.7.4",
-            "downloads": 6,
+            "downloads": 8,
             "published_at": "2026-05-19T08:18:27Z"
           },
           {
             "tag": "v3.7.3",
-            "downloads": 4,
+            "downloads": 8,
             "published_at": "2026-05-19T02:52:54Z"
           },
           {
@@ -3450,9 +3471,9 @@
             "x86_64": 68
           },
           "macos": {
-            "arm64": 305,
-            "universal": 50,
-            "x86_64": 124
+            "arm64": 314,
+            "universal": 64,
+            "x86_64": 135
           },
           "linux": {
             "arm64": 8,
