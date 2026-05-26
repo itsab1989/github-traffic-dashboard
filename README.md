@@ -7,7 +7,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.
 
-**Last Updated:** 2026-05-26T18:27:05.184597Z
+**Last Updated:** 2026-05-26T20:54:04.854796Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -162,18 +162,19 @@ Quick navigation to repository statistics:
 
 | Platform | Last 30 Days | Last 90 Days | Lifetime |
 |----------|-----------|-----------|----------|
-| 🪟 Windows | 9 | 9 | 99 |
-| 🍎 macOS | 43 | 43 | 522 |
+| 🪟 Windows | 10 | 10 | 100 |
+| 🍎 macOS | 44 | 44 | 523 |
 | 🐧 Linux | 0 | 0 | 31 |
-| **All** | **52** | **52** | **652** |
+| **All** | **54** | **54** | **654** |
 
-🆕 **Latest Release:** `v3.8.0-beta.9` - **2** downloads (published 2026-05-26)
+🆕 **Latest Release:** `v3.8.0-beta.10` - **1** download (published 2026-05-26)
 
 <details>
-<summary><strong>📦 Per-version downloads</strong> (170 releases - click to expand)</summary>
+<summary><strong>📦 Per-version downloads</strong> (171 releases - click to expand)</summary>
 
 | Release | 🪟 Windows | 🍎 macOS | 🐧 Linux | Total |
 |---------|-----------|----------|----------|-------|
+| v3.8.0-beta.10 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.9 | 1 | 1 | 0 | **2** |
 | v3.7.42 | 1 | 1 | 0 | **2** |
 | v3.8.0-beta.8 | 0 | 0 | 0 | **0** |
@@ -220,7 +221,7 @@ Quick navigation to repository statistics:
 | v3.7.7 | 0 | 4 | 0 | **4** |
 | v3.7.6 | 0 | 6 | 0 | **6** |
 | v3.7.5 | 5 | 7 | 1 | **13** |
-| v3.7.4 | 1 | 7 | 0 | **8** |
+| v3.7.4 | 1 | 8 | 0 | **9** |
 | v3.7.3 | 0 | 8 | 0 | **8** |
 | v3.7.2 | 1 | 1 | 0 | **2** |
 | v3.7.1 | 0 | 38 | 2 | **40** |
@@ -353,8 +354,8 @@ Quick navigation to repository statistics:
 
 | Platform | arm64 | x86_64 | universal | Total |
 |----------|-------|-------|-------|-------|
-| 🪟 Windows | 22 | 77 | 0 | **99** |
-| 🍎 macOS | 321 | 137 | 64 | **522** |
+| 🪟 Windows | 22 | 78 | 0 | **100** |
+| 🍎 macOS | 321 | 138 | 64 | **523** |
 | 🐧 Linux | 8 | 23 | 0 | **31** |
 
 **Top 10 Releases by Downloads (lifetime):**
