@@ -7,7 +7,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.
 
-**Last Updated:** 2026-05-27T12:53:38.010849Z
+**Last Updated:** 2026-05-27T16:38:21.196432Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -162,22 +162,25 @@ Quick navigation to repository statistics:
 
 | Platform | Last 30 Days | Last 90 Days | Lifetime |
 |----------|-----------|-----------|----------|
-| 🪟 Windows | 10 | 10 | 100 |
-| 🍎 macOS | 45 | 45 | 524 |
+| 🪟 Windows | 17 | 17 | 107 |
+| 🍎 macOS | 46 | 46 | 525 |
 | 🐧 Linux | 0 | 0 | 31 |
-| **All** | **55** | **55** | **655** |
+| **All** | **63** | **63** | **663** |
 
-🆕 **Latest Release:** `v3.8.0-beta.11` - **0** downloads (published 2026-05-27)
+🆕 **Latest Release:** `v3.8.0-beta.14` - **2** downloads (published 2026-05-27)
 
 <details>
-<summary><strong>📦 Per-version downloads</strong> (172 releases - click to expand)</summary>
+<summary><strong>📦 Per-version downloads</strong> (175 releases - click to expand)</summary>
 
 | Release | 🪟 Windows | 🍎 macOS | 🐧 Linux | Total |
 |---------|-----------|----------|----------|-------|
-| v3.8.0-beta.11 | 0 | 0 | 0 | **0** |
+| v3.8.0-beta.14 | 1 | 1 | 0 | **2** |
+| v3.8.0-beta.13 | 0 | 0 | 0 | **0** |
+| v3.8.0-beta.12 | 0 | 0 | 0 | **0** |
+| v3.8.0-beta.11 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.10 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.9 | 1 | 1 | 0 | **2** |
-| v3.7.42 | 1 | 2 | 0 | **3** |
+| v3.7.42 | 6 | 2 | 0 | **8** |
 | v3.8.0-beta.8 | 0 | 0 | 0 | **0** |
 | v3.8.0-beta.6 | 2 | 1 | 0 | **3** |
 | v3.7.41 | 1 | 1 | 0 | **2** |
@@ -355,8 +358,8 @@ Quick navigation to repository statistics:
 
 | Platform | arm64 | x86_64 | universal | Total |
 |----------|-------|-------|-------|-------|
-| 🪟 Windows | 22 | 78 | 0 | **100** |
-| 🍎 macOS | 321 | 138 | 65 | **524** |
+| 🪟 Windows | 22 | 85 | 0 | **107** |
+| 🍎 macOS | 322 | 138 | 65 | **525** |
 | 🐧 Linux | 8 | 23 | 0 | **31** |
 
 **Top 10 Releases by Downloads (lifetime):**
