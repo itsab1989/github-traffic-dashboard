@@ -7,7 +7,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.
 
-**Last Updated:** 2026-05-27T21:56:07.211741Z
+**Last Updated:** 2026-05-27T23:19:52.429589Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -162,18 +162,19 @@ Quick navigation to repository statistics:
 
 | Platform | Last 30 Days | Last 90 Days | Lifetime |
 |----------|-----------|-----------|----------|
-| 🪟 Windows | 25 | 25 | 115 |
-| 🍎 macOS | 47 | 47 | 526 |
+| 🪟 Windows | 26 | 26 | 116 |
+| 🍎 macOS | 48 | 48 | 527 |
 | 🐧 Linux | 0 | 0 | 31 |
-| **All** | **72** | **72** | **672** |
+| **All** | **74** | **74** | **674** |
 
-🆕 **Latest Release:** `v3.8.0-beta.15` - **3** downloads (published 2026-05-27)
+🆕 **Latest Release:** `v3.8.0-beta.16` - **1** download (published 2026-05-27)
 
 <details>
-<summary><strong>📦 Per-version downloads</strong> (176 releases - click to expand)</summary>
+<summary><strong>📦 Per-version downloads</strong> (177 releases - click to expand)</summary>
 
 | Release | 🪟 Windows | 🍎 macOS | 🐧 Linux | Total |
 |---------|-----------|----------|----------|-------|
+| v3.8.0-beta.16 | 0 | 1 | 0 | **1** |
 | v3.8.0-beta.15 | 2 | 1 | 0 | **3** |
 | v3.8.0-beta.14 | 6 | 1 | 0 | **7** |
 | v3.8.0-beta.13 | 0 | 0 | 0 | **0** |
@@ -181,7 +182,7 @@ Quick navigation to repository statistics:
 | v3.8.0-beta.11 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.10 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.9 | 1 | 1 | 0 | **2** |
-| v3.7.42 | 7 | 2 | 0 | **9** |
+| v3.7.42 | 8 | 2 | 0 | **10** |
 | v3.8.0-beta.8 | 0 | 0 | 0 | **0** |
 | v3.8.0-beta.6 | 2 | 1 | 0 | **3** |
 | v3.7.41 | 1 | 1 | 0 | **2** |
@@ -359,8 +360,8 @@ Quick navigation to repository statistics:
 
 | Platform | arm64 | x86_64 | universal | Total |
 |----------|-------|-------|-------|-------|
-| 🪟 Windows | 22 | 93 | 0 | **115** |
-| 🍎 macOS | 323 | 138 | 65 | **526** |
+| 🪟 Windows | 22 | 94 | 0 | **116** |
+| 🍎 macOS | 324 | 138 | 65 | **527** |
 | 🐧 Linux | 8 | 23 | 0 | **31** |
 
 **Top 10 Releases by Downloads (lifetime):**
@@ -376,7 +377,7 @@ Quick navigation to repository statistics:
 | v3.0.0-beta.10 | 18 | 2026-05-08 |
 | v3.7.5 | 13 | 2026-05-19 |
 | v3.6.0 | 13 | 2026-05-17 |
-| v3.7.9 | 10 | 2026-05-20 |
+| v3.7.42 | 10 | 2026-05-26 |
 
 #### Daily Release Downloads (30 Days)
 
