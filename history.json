@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-05-28T03:41:42Z",
-    "last_updated": "2026-05-28T03:41:46.256496Z",
+    "generated_at": "2026-05-28T07:59:54Z",
+    "last_updated": "2026-05-28T07:59:58.288080Z",
     "repositories": [
       "itsab1989/ChromIQ"
     ]
@@ -2625,7 +2625,7 @@
         }
       ],
       "metadata": {
-        "last_fetched": "2026-05-28T03:41:46Z",
+        "last_fetched": "2026-05-28T07:59:58Z",
         "clones_total": 6212,
         "clones_unique_total": 1356,
         "views_total": 871,
@@ -2679,10 +2679,10 @@
           },
           {
             "date": "2026-05-28",
-            "cumulative_total": 677,
-            "downloads_total": 3,
-            "cumulative_windows": 117,
-            "downloads_windows": 1,
+            "cumulative_total": 678,
+            "downloads_total": 4,
+            "cumulative_windows": 118,
+            "downloads_windows": 2,
             "cumulative_macos": 528,
             "downloads_macos": 1,
             "cumulative_linux": 32,
@@ -2690,13 +2690,21 @@
           }
         ],
         "metadata": {
-          "last_fetched": "2026-05-28T03:41:46Z",
-          "cumulative_total": 677,
-          "cumulative_windows": 117,
+          "last_fetched": "2026-05-28T07:59:58Z",
+          "cumulative_total": 678,
+          "cumulative_windows": 118,
           "cumulative_macos": 528,
           "cumulative_linux": 32
         },
         "by_release": [
+          {
+            "tag": "v3.8.0-beta.18",
+            "downloads": 0,
+            "windows": 0,
+            "macos": 0,
+            "linux": 0,
+            "published_at": "2026-05-28T06:05:39Z"
+          },
           {
             "tag": "v3.8.0-beta.17",
             "downloads": 2,
@@ -2707,8 +2715,8 @@
           },
           {
             "tag": "v3.8.0-beta.16",
-            "downloads": 2,
-            "windows": 1,
+            "downloads": 3,
+            "windows": 2,
             "macos": 1,
             "linux": 0,
             "published_at": "2026-05-27T22:59:33Z"
@@ -4125,7 +4133,7 @@
         "by_arch": {
           "windows": {
             "arm64": 22,
-            "x86_64": 95
+            "x86_64": 96
           },
           "macos": {
             "arm64": 325,
