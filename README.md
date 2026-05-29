@@ -7,7 +7,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.
 
-**Last Updated:** 2026-05-29T07:58:01.564955Z
+**Last Updated:** 2026-05-29T11:37:00.387500Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -97,9 +97,9 @@ Quick navigation to repository statistics:
 
 | Period | Total | Unique |
 |--------|-------|--------|
-| Last 30 Days | 6497 | 1431 |
-| Last 90 Days | 6497 | 1431 |
-| Lifetime | 6497 | 1431 |
+| Last 30 Days | 6638 | 1482 |
+| Last 90 Days | 6638 | 1482 |
+| Lifetime | 6638 | 1482 |
 
 ### 📄 Repeat vs New Clones
 
@@ -109,9 +109,9 @@ Quick navigation to repository statistics:
 
 | Period | Total Clones | Unique Clones | Repeat Clones | Repeat % |
 |--------|--------------|----------------|----------------|----------|
-| Last 30 Days | 6497 | 1431 | 5066 | 78.0% |
-| Last 90 Days | 6497 | 1431 | 5066 | 78.0% |
-| Lifetime | 6497 | 1431 | 5066 | 78.0% |
+| Last 30 Days | 6638 | 1482 | 5156 | 77.7% |
+| Last 90 Days | 6638 | 1482 | 5156 | 77.7% |
+| Lifetime | 6638 | 1482 | 5156 | 77.7% |
 
 ### 👀 Views
 
@@ -119,9 +119,9 @@ Quick navigation to repository statistics:
 
 | Period | Total | Unique |
 |--------|-------|--------|
-| Last 30 Days | 904 | 257 |
-| Last 90 Days | 904 | 257 |
-| Lifetime | 904 | 257 |
+| Last 30 Days | 938 | 269 |
+| Last 90 Days | 938 | 269 |
+| Lifetime | 938 | 269 |
 
 ### 📞 Referrers
 
@@ -131,12 +131,12 @@ Quick navigation to repository statistics:
 
 | Referrer | Total Views | Unique Visitors |
 |----------|-------------|----------------|
-| github.com | 85 | 13 |
-| reddit.com | 37 | 14 |
+| github.com | 72 | 12 |
+| reddit.com | 40 | 14 |
 | dpreview.com | 28 | 11 |
-| hub.displaycal.net | 13 | 3 |
-| printerknowledge.com | 12 | 6 |
-| Google | 10 | 6 |
+| hub.displaycal.net | 14 | 4 |
+| printerknowledge.com | 13 | 6 |
+| Google | 12 | 8 |
 | freelists.org | 4 | 1 |
 | forum.luminous-landscape.com | 3 | 3 |
 | com.reddit.frontpage | 2 | 2 |
@@ -150,9 +150,9 @@ Quick navigation to repository statistics:
 
 | Period | Total Views | Unique Visitors | Repeat Visitors | Repeat % |
 |--------|-------------|-----------------|-----------------|----------|
-| Last 30 Days | 904 | 257 | 647 | 71.6% |
-| Last 90 Days | 904 | 257 | 647 | 71.6% |
-| Lifetime | 904 | 257 | 647 | 71.6% |
+| Last 30 Days | 938 | 269 | 669 | 71.3% |
+| Last 90 Days | 938 | 269 | 669 | 71.3% |
+| Lifetime | 938 | 269 | 669 | 71.3% |
 
 ### 📥 Release Downloads
 
@@ -162,21 +162,21 @@ Quick navigation to repository statistics:
 
 | Platform | Last 30 Days | Last 90 Days | Lifetime |
 |----------|-----------|-----------|----------|
-| 🪟 Windows | 42 | 42 | 132 |
-| 🍎 macOS | 61 | 61 | 540 |
+| 🪟 Windows | 44 | 44 | 134 |
+| 🍎 macOS | 62 | 62 | 541 |
 | 🐧 Linux | 7 | 7 | 38 |
-| **All** | **110** | **110** | **710** |
+| **All** | **113** | **113** | **713** |
 
-🆕 **Latest Release:** `v3.8.0-beta.26` - **2** downloads (published 2026-05-29)
+🆕 **Latest Release:** `v3.8.0-beta.26` - **3** downloads (published 2026-05-29)
 
 <details>
 <summary><strong>📦 Per-version downloads</strong> (187 releases - click to expand)</summary>
 
 | Release | 🪟 Windows | 🍎 macOS | 🐧 Linux | Total |
 |---------|-----------|----------|----------|-------|
-| v3.8.0-beta.26 | 1 | 1 | 0 | **2** |
+| v3.8.0-beta.26 | 1 | 2 | 0 | **3** |
 | v3.8.0-beta.25 | 0 | 0 | 0 | **0** |
-| v3.8.0-beta.24 | 2 | 3 | 2 | **7** |
+| v3.8.0-beta.24 | 3 | 3 | 2 | **8** |
 | v3.8.0-beta.23 | 2 | 3 | 2 | **7** |
 | v3.8.0-beta.22 | 1 | 1 | 0 | **2** |
 | v3.8.0-beta.21 | 1 | 0 | 0 | **1** |
@@ -192,7 +192,7 @@ Quick navigation to repository statistics:
 | v3.8.0-beta.11 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.10 | 1 | 0 | 0 | **1** |
 | v3.8.0-beta.9 | 1 | 1 | 0 | **2** |
-| v3.7.42 | 11 | 3 | 0 | **14** |
+| v3.7.42 | 12 | 3 | 0 | **15** |
 | v3.8.0-beta.8 | 0 | 0 | 0 | **0** |
 | v3.8.0-beta.6 | 2 | 1 | 0 | **3** |
 | v3.7.41 | 1 | 1 | 0 | **2** |
@@ -370,8 +370,8 @@ Quick navigation to repository statistics:
 
 | Platform | arm64 | x86_64 | universal | Total |
 |----------|-------|-------|-------|-------|
-| 🪟 Windows | 25 | 107 | 0 | **132** |
-| 🍎 macOS | 331 | 141 | 68 | **540** |
+| 🪟 Windows | 25 | 109 | 0 | **134** |
+| 🍎 macOS | 331 | 142 | 68 | **541** |
 | 🐧 Linux | 11 | 27 | 0 | **38** |
 
 **Top 10 Releases by Downloads (lifetime):**
@@ -385,7 +385,7 @@ Quick navigation to repository statistics:
 | v3.7.1 | 40 | 2026-05-18 |
 | v3.6.6 | 38 | 2026-05-18 |
 | v3.0.0-beta.10 | 18 | 2026-05-08 |
-| v3.7.42 | 14 | 2026-05-26 |
+| v3.7.42 | 15 | 2026-05-26 |
 | v3.7.5 | 13 | 2026-05-19 |
 | v3.6.0 | 13 | 2026-05-17 |
 
