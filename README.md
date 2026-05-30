@@ -7,7 +7,7 @@ https://soul-traveller.github.io/github-traffic-dashboard/
 
 This dashboard tracks historical traffic data (clones, views, and release downloads) for GitHub repositories.
 
-**Last Updated:** 2026-05-30T11:21:07.548585Z
+**Last Updated:** 2026-05-30T13:40:36.930060Z
 
 ## 📋 How Metrics Are Calculated
 
@@ -162,19 +162,19 @@ Quick navigation to repository statistics:
 
 | Platform | Last 30 Days | Last 90 Days | Lifetime |
 |----------|-----------|-----------|----------|
-| 🪟 Windows | 48 | 48 | 138 |
-| 🍎 macOS | 74 | 74 | 553 |
+| 🪟 Windows | 52 | 52 | 142 |
+| 🍎 macOS | 78 | 78 | 557 |
 | 🐧 Linux | 9 | 9 | 40 |
-| **All** | **131** | **131** | **731** |
+| **All** | **139** | **139** | **739** |
 
-🆕 **Latest Release:** `v3.8.0` - **11** downloads (published 2026-05-29)
+🆕 **Latest Release:** `v3.8.0` - **17** downloads (published 2026-05-29)
 
 <details>
 <summary><strong>📦 Per-version downloads</strong> (193 releases - click to expand)</summary>
 
 | Release | 🪟 Windows | 🍎 macOS | 🐧 Linux | Total |
 |---------|-----------|----------|----------|-------|
-| v3.8.0 | 4 | 5 | 2 | **11** |
+| v3.8.0 | 8 | 7 | 2 | **17** |
 | v3.8.0-beta.31 | 0 | 1 | 0 | **1** |
 | v3.8.0-beta.30 | 0 | 1 | 0 | **1** |
 | v3.8.0-beta.29 | 0 | 1 | 0 | **1** |
@@ -254,7 +254,7 @@ Quick navigation to repository statistics:
 | v3.6.4 | 3 | 48 | 3 | **54** |
 | v3.6.3 | 0 | 1 | 0 | **1** |
 | v3.6.2 | 0 | 0 | 0 | **0** |
-| v3.6.1 | 0 | 1 | 0 | **1** |
+| v3.6.1 | 0 | 3 | 0 | **3** |
 | v3.6.0 | 3 | 6 | 4 | **13** |
 | v3.5.13 | 1 | 1 | 3 | **5** |
 | v3.5.12 | 0 | 1 | 0 | **1** |
@@ -376,8 +376,8 @@ Quick navigation to repository statistics:
 
 | Platform | arm64 | x86_64 | universal | Total |
 |----------|-------|-------|-------|-------|
-| 🪟 Windows | 26 | 112 | 0 | **138** |
-| 🍎 macOS | 338 | 144 | 71 | **553** |
+| 🪟 Windows | 26 | 116 | 0 | **142** |
+| 🍎 macOS | 339 | 144 | 74 | **557** |
 | 🐧 Linux | 12 | 28 | 0 | **40** |
 
 **Top 10 Releases by Downloads (lifetime):**
@@ -391,9 +391,9 @@ Quick navigation to repository statistics:
 | v3.7.1 | 40 | 2026-05-18 |
 | v3.6.6 | 38 | 2026-05-18 |
 | v3.0.0-beta.10 | 18 | 2026-05-08 |
+| v3.8.0 | 17 | 2026-05-29 |
 | v3.7.42 | 15 | 2026-05-26 |
 | v3.7.5 | 13 | 2026-05-19 |
-| v3.6.0 | 13 | 2026-05-17 |
 
 #### Daily Release Downloads (30 Days)
 
