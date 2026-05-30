@@ -1,0 +1,4 @@
+# Repositories to track, one "owner/name" per line.
+# This is the single source of truth for the repo list (read by
+# scripts/fetch_traffic.py). Blank lines and #comments are ignored.
+itsab1989/ChromIQ
