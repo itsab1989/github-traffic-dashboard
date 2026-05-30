@@ -1,0 +1,38 @@
+# Weekly digest: posts a short summary of the dashboard's headline movements as a
+# GitHub Issue, so the highlights are pushed to you instead of waiting on a visit.
+# Reads the committed history.json (no API calls, no token beyond GITHUB_TOKEN).
+name: Weekly Digest
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # Mondays 07:00 UTC
+  workflow_dispatch:
+
+# Only needs to read the repo and open an issue.
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # weekly_digest.py is pure standard library, so no dependencies to install.
+      - name: Build digest
+        run: python scripts/weekly_digest.py digest.md
+
+      - name: Post digest as an issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          title="📊 Weekly digest — $(date -u +%Y-%m-%d)"
+          gh issue create --title "$title" --body-file digest.md
