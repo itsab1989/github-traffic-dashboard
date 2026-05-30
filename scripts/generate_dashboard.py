@@ -1866,6 +1866,25 @@ def generate_readme(history_data: Dict[str, Any]) -> None:
     save_file(md, README_FILE_PATH)
 
 
+def _trim_leading_zeros(dates: List[str], *series: List[int]) -> Tuple[List[str], List[List[int]]]:
+    """
+    Drop leading entries where every series is zero.
+
+    The cumulative traffic series is zero-filled back ~a year, so it carries
+    hundreds of all-zero leading points that never change. Trimming them keeps
+    the chart focused on real activity and shrinks the hourly chart-data.json diff.
+    Always keeps at least the final point so a chart is never emptied.
+    """
+    start = 0
+    for i in range(len(dates)):
+        if any(s[i] for s in series):
+            start = i
+            break
+    else:
+        start = max(0, len(dates) - 1)  # all zero: keep just the last point
+    return dates[start:], [list(s[start:]) for s in series]
+
+
 def build_chart_data(history_data: Dict[str, Any]) -> Dict[str, Any]:
     """
     Assemble the time-series payload consumed by the interactive dashboard page.
@@ -1899,6 +1918,9 @@ def build_chart_data(history_data: Dict[str, Any]) -> Dict[str, Any]:
         w_dates, w_clones, w_views = get_weekly_data(daily_data, WEEKLY_GRAPH_WEEKS)
         b_dates, b_clones, b_views = get_biweekly_data(daily_data, BIWEEKLY_GRAPH_PERIODS)
         c_dates, c_clones, c_views = get_cumulative_data(daily_data)
+        # Trim the long zero-filled lead-in so the cumulative chart (and the
+        # committed JSON diff) only spans days with real activity.
+        c_dates, (c_clones, c_views) = _trim_leading_zeros(c_dates, c_clones, c_views)
 
         dl_d_dates, dl_d_series = get_downloads_daily(downloads_daily, DAILY_GRAPH_DAYS)
         dl_c_dates, dl_c_series = get_downloads_cumulative(downloads_daily)

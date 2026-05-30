@@ -39,8 +39,12 @@ INDEX_HTML = """<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard preview (sample data)</title>
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css"
+        integrity="sha384-LTbdgUzZ3SXn50n5dAZ75Kpp86fR5oSHELRlFJqZ08kHpI2/Jwsgi/KA8UdnqXSK"
+        crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
+          integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi"
+          crossorigin="anonymous"></script>
   <style>
     body { margin: 0; background: #f6f8fa; }
     .banner { background: #fff3cd; color: #664d03; border-bottom: 1px solid #ffe69c;
