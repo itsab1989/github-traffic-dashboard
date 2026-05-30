@@ -14,5 +14,8 @@ traffic_data.json
 merged_history.json
 tmp.json
 
+# Local dashboard preview output (scripts/preview.py)
+.preview/
+
 # OS / editor
 .DS_Store
