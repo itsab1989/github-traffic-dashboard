@@ -26,13 +26,20 @@ jobs:
           python-version: "3.12"
 
       # weekly_digest.py is pure standard library, so no dependencies to install.
+      # The digest is always written to the run summary; posting an issue is
+      # best-effort (e.g. it's skipped if Issues are disabled) and never fails the job.
       - name: Build digest
-        run: python scripts/weekly_digest.py digest.md
+        run: |
+          python scripts/weekly_digest.py digest.md
+          cat digest.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post digest as an issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -e
           title="📊 Weekly digest — $(date -u +%Y-%m-%d)"
-          gh issue create --title "$title" --body-file digest.md
+          if gh issue create --title "$title" --body-file digest.md; then
+            echo "Posted weekly digest issue."
+          else
+            echo "::warning::Could not create the digest issue (are Issues enabled?). The digest is in this run's summary."
+          fi
